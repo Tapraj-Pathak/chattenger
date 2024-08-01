@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const app = express();
 
@@ -9,11 +10,15 @@ const {createServer} = require('http');
 const server = createServer(app);
 const io = new Server(server);
 
+const userModel = require('./models/user-model');
+
 const {connectToDB} = require('./configs/connection');
 
 const indexRoute = require('./routes/index');
 
 connectToDB();
+
+const PORT = process.env.PORT;
 
 app.set('view engine', 'ejs');
 
@@ -25,9 +30,10 @@ app.use(express.urlencoded({extended: true}));
 app.use('/',indexRoute);
 
 io.on('connection', (socket) => {
-    socket.on('chat message', (msg) => {
+    socket.on('chat message',async (msg) => {
+        
         io.emit('chat message', msg);
     });
 });
 
-server.listen(3000);
+server.listen(PORT);
