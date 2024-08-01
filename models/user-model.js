@@ -10,6 +10,7 @@ const schema = new mongoose.Schema({
   },
   messages: [{
     senderId: String,
+    senderUsername: String,
     content: String,
     createdAt: { type: Date, default: Date.now }
   }],
