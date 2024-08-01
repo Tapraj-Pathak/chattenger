@@ -56,19 +56,23 @@ router.post('/signup',async function (req, res) {
 });
 
 router.post('/login',async function(req, res) {
-    const {email, password} = req.body;
-    let user = await userModel.findOne({email});
-    if(!user) {
-        return res.redirect('/login');
+    try {
+        const {email, password} = req.body;
+        let user = await userModel.findOne({email});
+        if(!user) {
+            throw new Error("Invalid email or password")
+        }
+    
+        const matchPassword = await bcrypt.compare(password, user.password);
+        
+        if (!matchPassword) throw new Error("Invalid email or password")
+        
+        let token = jwt.sign({email,username:user.username,_id:user._id,profileImage:user.profileImage},'shhhhh');
+        res.cookie('token', token);
+        res.redirect(`/profile/${user._id}`);
+    } catch (error) {
+        res.render('login',{error})
     }
-
-    const matchPassword = await bcrypt.compare(password, user.password);
-    
-    if (!matchPassword) return res.send('Invalid email or password');
-    
-    let token = jwt.sign({email,username:user.username,_id:user._id,profileImage:user.profileImage},'shhhhh');
-    res.cookie('token', token);
-    res.redirect(`/profile/${user._id}`);
 });
 
 router.post('/logout', function(req, res) {

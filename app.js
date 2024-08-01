@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express');
 const app = express();
 
+const flash = require("connect-flash");
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const { Server } = require('socket.io');
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended: true}));
+app.use(flash());
 
 app.use('/',indexRoute);
 
