@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const flash = require("connect-flash");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const { Server } = require("socket.io");
